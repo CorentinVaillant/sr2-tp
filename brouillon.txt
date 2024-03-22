@@ -1,0 +1,9 @@
+Brouillon !!
+
+déroulement Go back N :
+fenètre de taille N
+1- envoie de n paquets au recepteur
+2- attend aquitement
+3- déplace le curseur du prochain envoie à chaque aquitement reçu
+4- décale la fenètre
+recommence
