@@ -56,23 +56,28 @@ int main(int argc, char* argv[])
                 /* remise des données à la couche application */
                 fin = vers_application(message, paquet.lg_info);
 
+                paquet_a_recevoir ++; paquet_a_recevoir %= SEQ_NUM_SIZE;
 
                 ack.num_seq = paquet_a_recevoir;
                 ack.somme_ctrl = creer_somme_ctrl(ack);
-                
-                paquet_a_recevoir ++; paquet_a_recevoir %= SEQ_NUM_SIZE;
-
-
+            
             }
             else{
-                printf("mauvais paquet ❌ %d reçu\n \t-demande %d\n",paquet.num_seq,paquet_a_recevoir);
+                printf("mauvais paquet ❌ %d reçu\n \t-demande %d\n",paquet.num_seq,ack.num_seq);
             }
         }
         else{
-            printf("somme ctrl 👎\n \t-ctrl sum : %d -> %d\n \t-demande du paquet %d\n",paquet.somme_ctrl,paquet.somme_ctrl ^ creer_somme_ctrl(paquet),paquet_a_recevoir);
-        }
+            printf("somme ctrl 👎\n \t-ctrl sum : %d -> %d\n \t-demande du paquet %d\n",paquet.somme_ctrl,paquet.somme_ctrl ^ creer_somme_ctrl(paquet),ack.num_seq);        }
         vers_reseau(&ack);
         
+    }
+    // cas du dernier ack perdu 
+    depart_temporisateur(100);
+    while(attendre() == -1){
+        de_reseau(&paquet);
+        arret_temporisateur();
+        vers_reseau(&ack);
+        depart_temporisateur(100);
     }
 
     printf("[TRP] Fin execution protocole transport.\n");

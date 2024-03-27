@@ -238,12 +238,16 @@ int attendre()
         initialisation(0.f, 0.f, 2000, "localhost", 2001);
     }
 
+        
     while (!fini)
     {
+
         /* voyons s'il n'y a pas un timer expire */
         i = 0;
         while (i < nb_timers)
         {
+            
+
             if (timers[i].exp == 0)
             {
                 int timer = timers[i].num_timer;
@@ -261,15 +265,22 @@ int attendre()
 
         if (nb_timers > 0)
         {
+
             timeout.tv_sec = 0;
             timeout.tv_usec = 100000; /* 100000 us = 100 ms */
             ptimeout = &timeout;
         }
-        else
+        else{
+            printf("ptimeout <- NULL");
             ptimeout = NULL;
+        }
+        
 
         FD_ZERO(&read_fs);
         FD_SET(physique_socket, &read_fs);
+
+        
+        
 
 #ifndef UNIX
         taille_fd_set = 1;
@@ -278,10 +289,13 @@ int attendre()
 #endif
         // on vérifie les timers toutes les 100 ms (ptimeout)
         rep = select(taille_fd_set, &read_fs, NULL, NULL, ptimeout);
+
+        
         switch (rep)
         {
         case -1:
 #ifndef UNIX
+
             printf("select() n'a pas fonctionne, erreur : %d\n", WSAGetLastError());
             WSACleanup();
 #else
@@ -294,6 +308,7 @@ int attendre()
             i = 0;
             while (i < nb_timers)
             {
+
                 if (timers[i].exp > 0)
                 {
                     timers[i].exp -= 100;
@@ -313,7 +328,6 @@ int attendre()
             }
         }
     }
-
     return resultat;
 }
 

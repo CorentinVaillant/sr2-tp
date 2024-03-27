@@ -10,7 +10,7 @@ FICHIER_OUT fichiers/out.ppm
 #------------------------
 # Emetteur
 PROBA_PERTE_E 0
-PROBA_ERREUR_E 0.1
+PROBA_ERREUR_E 0
 
 # Recepteur
 PROBA_PERTE_R 0
