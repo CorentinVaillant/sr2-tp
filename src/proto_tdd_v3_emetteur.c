@@ -1,6 +1,6 @@
 /*************************************************************
-* proto_tdd_v0 -  émetteur                                   *
-* TRANSFERT DE DONNEES  v0                                   *
+* proto_tdd_v3 -  émetteur                                   *
+* TRANSFERT DE DONNEES  v3                                   *
 *                                                            *
 * Protocole sans contrôle de flux, sans reprise sur erreurs  *
 *                                                            *
@@ -13,6 +13,7 @@
 #include "services_reseau.h"
 
 #define TEMPO 100
+#define DEFAULT_WIN_SIZE 7
 
 
 /* =============================== */
@@ -28,7 +29,7 @@ int main(int argc, char* argv[])
 
     uint8_t taille_fen;
     if(argc  == 1){
-        taille_fen = 7;
+        taille_fen = DEFAULT_WIN_SIZE;
     }else
         sscanf(argv[1],"%hhu",&taille_fen); /*lecture de la taille fenètre donné par l'utilisateur*/
 

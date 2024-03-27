@@ -1,10 +1,10 @@
 /*************************************************************
-* proto_tdd_v0 -  émetteur                                   *
-* TRANSFERT DE DONNEES  v0                                   *
+* proto_tdd_v1 -  émetteur                                   *
+* TRANSFERT DE DONNEES  v1                                   *
 *                                                            *
 * Protocole sans contrôle de flux, sans reprise sur erreurs  *
 *                                                            *
-* E. Lavinal - Univ. de Toulouse III - Paul Sabatier         *
+* C. Vaillant - Univ. de Toulouse III - Paul Sabatier        *
 **************************************************************/
 
 #include <stdio.h>
