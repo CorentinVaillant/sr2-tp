@@ -18,7 +18,7 @@ int8_t creer_somme_ctrl(paquet_t paquet){
     for(int i = 0 ; i<paquet.lg_info ; i++){
         somme ^= paquet.info[i];
     }
-    somme ^= 255;
+    
     return somme;
 }
 

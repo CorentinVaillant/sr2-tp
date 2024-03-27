@@ -31,7 +31,7 @@ typedef struct paquet_s {
 
 
 /* Capacite de numerotation */
-#define SEQ_NUM_SIZE 8
+#define SEQ_NUM_SIZE 16
 
 /* ************************************** */
 /* Fonctions utilitaires couche transport */
