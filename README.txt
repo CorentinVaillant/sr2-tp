@@ -1,1 +1,1 @@
-Indiquez dans ce fichier des éventuels commentaires à communiquer à l'enseignant.
+à partir de la v3 un mode "debug" est activable, si DEBUG est definie sur 1, le programme affichera toutes les actions qu'ils effectues

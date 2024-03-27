@@ -13,6 +13,15 @@
 #include "services_reseau.h"
 
 
+#define DEBUG 0
+
+#if DEBUG
+#define IF_DEBUG(FORM) FORM
+#else
+#define IF_DEBUG(FORM)
+#endif
+
+
 /* =============================== */
 /* Programme principal - récepteur */
 /* =============================== */
@@ -36,7 +45,7 @@ int main(int argc, char* argv[])
     printf("[TRP] Initialisation reseau : OK.\n");
     printf("[TRP] Debut execution protocole transport.\n");
 
-    int compteur_boucle = 0; // toremove
+    IF_DEBUG(int compteur_boucle = 0); // si le debug mode active
 
     /* tant que le récepteur reçoit des données */
     while ( !fin ) {
@@ -48,7 +57,7 @@ int main(int argc, char* argv[])
         
         if(test_somme_ctrl(paquet)){
             if(paquet.num_seq == paquet_a_recevoir){
-                printf("somme ctrl 👍\n paquet n°%d reçu\n",paquet.num_seq);
+                IF_DEBUG (printf("somme ctrl 👍\n paquet n°%d reçu\n",paquet.num_seq));// si le debug mode active
                 
                 /* extraction des donnees du paquet recu */
                 for (int i=0; i<paquet.lg_info; i++) {
@@ -63,17 +72,17 @@ int main(int argc, char* argv[])
                 ack.somme_ctrl = creer_somme_ctrl(ack);
             
             }
-            else{
-                printf("mauvais paquet ❌ %d reçu\n \t-demande %d\n",paquet.num_seq,ack.num_seq);
-            }
+            IF_DEBUG(else
+                printf("mauvais paquet ❌ %d reçu\n \t-demande %d\n",paquet.num_seq,ack.num_seq)); //si le debug mode active
+            
         }
-        else{
-            printf("somme ctrl 👎\n \t-ctrl sum : %d -> %d\n \t-demande du paquet %d\n",paquet.somme_ctrl,paquet.somme_ctrl ^ creer_somme_ctrl(paquet),ack.num_seq);        }
+        IF_DEBUG(else 
+            printf("somme ctrl 👎\n \t-ctrl sum : %d -> %d\n \t-demande du paquet %d\n",paquet.somme_ctrl,paquet.somme_ctrl ^ creer_somme_ctrl(paquet),ack.num_seq));        
         vers_reseau(&ack);
 
 
-        printf("-%d (paquet_a_recevoir : %d ; fin : %d)\n",compteur_boucle,paquet_a_recevoir,fin);
-        compteur_boucle ++;
+        IF_DEBUG(printf("-%d (paquet_a_recevoir : %d ; fin : %d)\n",compteur_boucle,paquet_a_recevoir,fin)); // si le debug mode active
+        IF_DEBUG(compteur_boucle ++); // si le debug mode active
     }
 
 

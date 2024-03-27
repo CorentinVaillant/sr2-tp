@@ -15,6 +15,17 @@
 #define TEMPO 100
 #define DEFAULT_WIN_SIZE 7
 
+#define DEBUG 0
+
+#if DEBUG
+#define IF_DEBUG(FORM) FORM
+#else
+#define IF_DEBUG(FORM)
+#endif
+
+
+
+
 
 /* =============================== */
 /* Programme principal - émetteur  */
@@ -27,14 +38,14 @@ int main(int argc, char* argv[])
     paquet_t ack; /*paquet de gestion d'erreur*/
 
 
-    uint8_t taille_fen;
+    unsigned int taille_fen;
     if(argc  == 1){
         taille_fen = DEFAULT_WIN_SIZE;
     }else
-        sscanf(argv[1],"%hhu",&taille_fen); /*lecture de la taille fenètre donné par l'utilisateur*/
+        sscanf(argv[1],"%u",&taille_fen); /*lecture de la taille fenètre donné par l'utilisateur*/
 
-    uint8_t deb_fen = 0; /*entier correspondant au pointeur du début de la fenètre*/
-    uint8_t prochain_pack = 0; /*entier corresspondant au pointeur du prochain paquet à envoyer*/
+    int deb_fen = 0; /*entier correspondant au pointeur du début de la fenètre*/
+    int prochain_pack = 0; /*entier corresspondant au pointeur du prochain paquet à envoyer*/
 
 
     init_reseau(EMISSION);
@@ -46,7 +57,7 @@ int main(int argc, char* argv[])
     de_application(message, &taille_msg);
 
 
-    int compteur_boucle = 0; // toremove
+    IF_DEBUG( int compteur_boucle = 0); //seulement en mode debug
 
     
     
@@ -55,12 +66,12 @@ int main(int argc, char* argv[])
         
         if (dans_fenetre(deb_fen,prochain_pack,taille_fen) && taille_msg != 0){
             /*envoie et construction paquets[prochain_pack]*/
-            printf("création du paquet n°%d\n",prochain_pack); // toremove
+            IF_DEBUG(printf("création du paquet n°%d\n",prochain_pack)); //seulement en mode debug
             for (int i=0; i<taille_msg; i++) {
                 paquets[prochain_pack].info[i] = message[i];
-                printf("📦");
+                IF_DEBUG(printf("📦")); //seulement en mode debug
             }
-            printf("(%doct)\n",taille_msg); // toremove
+            IF_DEBUG(printf("(%doct)\n",taille_msg)); //seulement en mode debug
             paquets[prochain_pack].num_seq = prochain_pack;
 
             paquets[prochain_pack].lg_info = taille_msg;
@@ -71,44 +82,45 @@ int main(int argc, char* argv[])
             if(taille_msg != 0){
                 de_application(message, &taille_msg);
             }
+            //envoie du paquet
             vers_reseau(&paquets[prochain_pack]);//envoie
-            printf("⬅️ envoie du paquet n°%d\n",prochain_pack); // toremove
+            IF_DEBUG(printf("⬅️ envoie du paquet n°%d\n",prochain_pack)); //seulement en mode debug
 
 
             if(deb_fen == prochain_pack){
                 depart_temporisateur(TEMPO);
-                printf("depart temporisateur (deb == prochain pack)\n"); // toremove
+                IF_DEBUG(printf("depart temporisateur (deb == prochain pack)\n")); //seulement en mode debug
             }
             //incrementation de prochain_pack
             prochain_pack +=1;
             prochain_pack %= SEQ_NUM_SIZE;
             
-            printf("prochaint_pack incrémenter :%d\n",prochain_pack); // toremove
+            IF_DEBUG(printf("prochaint_pack incrémenter :%d\n",prochain_pack)); //seulement en mode debug
 
         }
         else {
-            printf("no new packages\n"); // toremove
+            IF_DEBUG(printf("no new packages\n")); //seulement en mode debug
             if (attendre() == -1 ){
                 de_reseau(&ack);
-                printf("⮩ reception du ack n°%d\n",ack.num_seq); // toremove
+                IF_DEBUG(printf("⮩ reception du ack n°%d\n",ack.num_seq)); //seulement en mode debug
                 if (test_somme_ctrl(ack) && dans_fenetre(deb_fen,ack.num_seq,taille_fen) ){
-                    deb_fen = ack.num_seq  ; 
-                    deb_fen %= SEQ_NUM_SIZE; // toremove
-                    printf("deb_fenetre = %d\n", deb_fen); // toremove
+                    deb_fen = ack.num_seq ; 
+
+                    IF_DEBUG(printf("deb_fenetre = %d\n", deb_fen)); //seulement en mode debug
 
                     if(deb_fen == prochain_pack){
                         arret_temporisateur();
-                        printf("arret temporisateur (ack reçu && deb_fen == prochain_pack)\n"); // toremove
+                        IF_DEBUG(printf("arret temporisateur (ack reçu && deb_fen == prochain_pack)\n")); //seulement en mode debug
                     }
                 }
-                else printf("❌ ack hors séquence ou somme de ctrl 👎, ignorée (n°%d (%d pas dans fenetre))\n",ack.num_seq,(ack.num_seq)%SEQ_NUM_SIZE); // toremove
+                IF_DEBUG(else printf("❌ ack hors séquence ou somme de ctrl 👎, ignorée (n°%d (%d pas dans fenetre))\n",ack.num_seq,(ack.num_seq)%SEQ_NUM_SIZE)); //seulement en mode debug
             
 
             }
             else{
-                printf("⏲️ TIMEOUT\n"); // toremove
                 depart_temporisateur(TEMPO);
-                printf("depart tempo(TIMEOUT)\n"); // toremove
+                IF_DEBUG(printf("⏲️ TIMEOUT\n")); //seulement en mode debug
+                IF_DEBUG(printf("depart tempo(TIMEOUT)\n")); //seulement en mode debug
 
 
                 int i = deb_fen;
@@ -122,12 +134,17 @@ int main(int argc, char* argv[])
 
         }
 
-        printf("-%d (deb_fen : %d ; prochain_pack : %d)\n",compteur_boucle,deb_fen,prochain_pack); // toremove
-        compteur_boucle ++; // toremove
+        IF_DEBUG(printf("-%d (deb_fen : %d ; prochain_pack : %d)\n",compteur_boucle,deb_fen,prochain_pack)); //seulement en mode debug
+        IF_DEBUG(compteur_boucle ++); //seulement en mode debug
     }
 
     
 
     printf("[TRP] Fin execution protocole transfert de donnees (TDD).\n");
+
+    IF_DEBUG(printf("EXIT DEBUG MODE\n");)
+
+
+
     return 0;
 }
