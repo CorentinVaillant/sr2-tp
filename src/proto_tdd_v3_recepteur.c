@@ -53,7 +53,6 @@ int main(int argc, char* argv[])
 
         // attendre(); /* optionnel ici car de_reseau() fct bloquante */
         de_reseau(&paquet);
-
         
         if(test_somme_ctrl(paquet)){
             if(paquet.num_seq == paquet_a_recevoir){
@@ -74,7 +73,7 @@ int main(int argc, char* argv[])
             }
             IF_DEBUG(else
                 printf("mauvais paquet ❌ %d reçu\n \t-demande %d\n",paquet.num_seq,ack.num_seq)); //si le debug mode active
-            
+
         }
         IF_DEBUG(else 
             printf("somme ctrl 👎\n \t-ctrl sum : %d -> %d\n \t-demande du paquet %d\n",paquet.somme_ctrl,paquet.somme_ctrl ^ creer_somme_ctrl(paquet),ack.num_seq));        
