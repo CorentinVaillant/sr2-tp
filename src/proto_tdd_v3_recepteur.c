@@ -36,6 +36,8 @@ int main(int argc, char* argv[])
     printf("[TRP] Initialisation reseau : OK.\n");
     printf("[TRP] Debut execution protocole transport.\n");
 
+    int compteur_boucle = 0; // toremove
+
     /* tant que le récepteur reçoit des données */
     while ( !fin ) {
 
@@ -68,15 +70,20 @@ int main(int argc, char* argv[])
         else{
             printf("somme ctrl 👎\n \t-ctrl sum : %d -> %d\n \t-demande du paquet %d\n",paquet.somme_ctrl,paquet.somme_ctrl ^ creer_somme_ctrl(paquet),ack.num_seq);        }
         vers_reseau(&ack);
-        
+
+
+        printf("-%d (paquet_a_recevoir : %d ; fin : %d)\n",compteur_boucle,paquet_a_recevoir,fin);
+        compteur_boucle ++;
     }
+
+
     // cas du dernier ack perdu 
-    depart_temporisateur(100);
+    depart_temporisateur(200);
     while(attendre() == -1){
         de_reseau(&paquet);
         arret_temporisateur();
         vers_reseau(&ack);
-        depart_temporisateur(100);
+        depart_temporisateur(200);
     }
 
     printf("[TRP] Fin execution protocole transport.\n");

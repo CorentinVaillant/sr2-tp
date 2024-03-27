@@ -52,7 +52,7 @@ int main(int argc, char* argv[])
     /* tant que l'émetteur a des données à envoyer */
     while ( taille_msg != 0 || deb_fen != prochain_pack) {
         
-        if (dans_fenetre(deb_fen,prochain_pack,taille_fen)){
+        if (dans_fenetre(deb_fen,prochain_pack,taille_fen) && taille_msg != 0){
             /*envoie et construction paquets[prochain_pack]*/
             printf("création du paquet n°%d\n",prochain_pack); // toremove
             for (int i=0; i<taille_msg; i++) {
@@ -86,7 +86,7 @@ int main(int argc, char* argv[])
 
         }
         else {
-            printf("send nothing\n"); // toremove
+            printf("no new packages\n"); // toremove
             if (attendre() == -1 ){
                 de_reseau(&ack);
                 printf("⮩ reception du ack n°%d\n",ack.num_seq); // toremove
@@ -110,8 +110,12 @@ int main(int argc, char* argv[])
                 printf("depart tempo(TIMEOUT)\n"); // toremove
 
 
-                for(int i = 0; i < prochain_pack ; i = (i+1)%SEQ_NUM_SIZE)
+                int i = deb_fen;
+                while (i != prochain_pack){
                     vers_reseau(&paquets[i]);
+                    i += 1;
+                    i %= SEQ_NUM_SIZE;
+                }
                 
             }
 
