@@ -12,7 +12,6 @@
 #include "couche_transport.h"
 #include "services_reseau.h"
 
-#define NUMEROTATION_FEN 16
 
 /* =============================== */
 /* Programme principal - récepteur */
